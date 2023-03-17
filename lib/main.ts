@@ -1,0 +1,5 @@
+export {defineReactive, reactive} from './defineReactive'
+export {nextTick} from './scheduler'
+export {Watcher} from './watcher'
+export {watch} from './watch'
+export {computed} from './computed'
