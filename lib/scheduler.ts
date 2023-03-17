@@ -36,6 +36,8 @@ export function nextTick(cbk: Function) {
 }
 function flushCallbacks() {
   // 为啥要拷贝，因为当嵌套时，顺序会出现问题
+  // 比如其中一个callback中又执行了nextTick，
+  // 不进行拷贝的话，那么callbacks,就会添加进去
   let cbs = callbacks.slice(0)
   callbacks = []
   for (let i = 0; i < cbs.length; i++) {

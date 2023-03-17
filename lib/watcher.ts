@@ -17,7 +17,7 @@ export class Watcher {
   callback: Callback | undefined
   value: unknown
 
-  // fn 就是用户监听和渲染watcher
+  // fn 就是用户监听和渲染watcher的getter
   constructor(fn: Function, options?: Options, callback?: Callback) {
     this.id = id++
     this.getter = fn
@@ -42,12 +42,13 @@ export class Watcher {
       // 如果是计算属性  依赖的值变化了 就标识计算属性是脏值了
       this.dirty = true
     } else {
+      // 异步更新策略
       queueWatcher(this)
     }
   }
   run() {
     const oldValue = this.value
-    const newValue = this.get()
+    const newValue = this.getter()
     if (this.user && this.callback) {
       this.callback(newValue, oldValue)
     }

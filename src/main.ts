@@ -49,7 +49,7 @@ console.log('同步2', document.querySelector('#test')?.innerHTML)
 
 watch(
   () => obj.x,
-  (newValue) => {
-    console.log('obj.x change~', newValue)
+  (newValue, oldValue) => {
+    console.log('obj.x change~', newValue, 'old-value', oldValue)
   }
 )
