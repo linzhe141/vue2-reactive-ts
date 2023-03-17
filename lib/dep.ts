@@ -18,7 +18,7 @@ export class Dep {
   }
   addSub(watcher: Watcher) {
     // 源码是在watcher中进行添加dep所对应watcher的
-    // 理由见img目录
+    // 理由见note目录
     if (!this.map.get(watcher.id)) {
       this.map.set(watcher.id, true)
       this.subs.push(watcher)

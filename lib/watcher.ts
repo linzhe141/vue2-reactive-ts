@@ -25,10 +25,10 @@ export class Watcher {
     this.lazy = options?.lazy
     this.callback = callback
     this.dirty = this.lazy
-    this.get()
     // 源码：当是计算属性的getter，是不执行的 默认不走依赖收集
     // 是在render函数执行中，去执行evaluate， 走依赖收集
-    // this.value = this.lazy ? undefined: this.getter()
+    // !见img和readme
+    this.get()
     this.value = this.getter()
   }
   get() {

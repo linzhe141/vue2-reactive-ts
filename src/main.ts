@@ -36,6 +36,12 @@ const render = () => {
       <div> ${computedTest.value}</div>
     </div>
    `
+  // document.body.innerHTML = `
+  //   <div>
+  //     <div id='test'>obj:y-->${obj.y}</div>
+  //     <div> ${computedTest.value}</div>
+  //   </div>
+  //  `
 }
 // 组件就是一个渲染watcher
 new Watcher(render)
