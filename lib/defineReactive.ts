@@ -9,11 +9,14 @@ export function defineReactive(
   Object.defineProperty(target, key, {
     get: function reactiveGetter() {
       if (Dep.target) {
-        dep.addSub(Dep.target)
+        // dep.addSub(Dep.target)
+        // watcher必须要记录对应的dep要不计算属性不好实现
+        dep.depend()
       }
       return value
     },
     set: function reactiveSetter(newValue) {
+      // debugger
       if (!Array.isArray(newValue) && typeof newValue === 'object') {
         reactive(newValue)
       }

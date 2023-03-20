@@ -1,4 +1,12 @@
-import {Watcher, nextTick, reactive, watch, computed} from '../lib/main'
+import {
+  Watcher,
+  nextTick,
+  reactive,
+  watch,
+  computed,
+  ref,
+  watchEffect,
+} from '../lib/main'
 
 const obj = reactive({
   x: 100,
@@ -10,7 +18,9 @@ const obj = reactive({
     },
   },
 })
+const refTest = ref(1)
 ;(window as any).__reactive_obj__ = obj
+;(window as any).__ref_obj__ = refTest
 // const render = () => {
 //   document.body.innerHTML = `
 //   <div>
@@ -29,19 +39,20 @@ const computedTest = computed(() => {
   return obj.x * 2
 })
 const render = () => {
-  document.body.innerHTML = `
-    <div>
-      <div id='test'>obj:x-->${JSON.stringify(obj.x)}</div>
-      <div id='test'>obj:y-->${obj.y}</div>
-      <div> ${computedTest.value}</div>
-    </div>
-   `
   // document.body.innerHTML = `
   //   <div>
+  //     <div id='test'>obj:x-->${JSON.stringify(obj.x)}</div>
   //     <div id='test'>obj:y-->${obj.y}</div>
   //     <div> ${computedTest.value}</div>
   //   </div>
   //  `
+  document.body.innerHTML = `
+    <div>
+      <div>refTest-->${refTest.value}</div>
+      <div id='test'>obj:y-->${obj.y}</div>
+      <div> ${computedTest.value}</div>
+    </div>
+   `
 }
 // 组件就是一个渲染watcher
 new Watcher(render)
@@ -59,3 +70,14 @@ watch(
     console.log('obj.x change~', newValue, 'old-value', oldValue)
   }
 )
+
+watch(
+  () => computedTest.value as any,
+  (newValue, oldValue) => {
+    console.log('computedTest.value change~', newValue, 'old-value', oldValue)
+  }
+)
+
+watchEffect(() => {
+  console.log('watchEffect refTest', refTest.value)
+})

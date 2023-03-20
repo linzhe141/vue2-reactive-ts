@@ -1,5 +1,18 @@
 # 1、源码 Dep 的静态属性 target 为什么是栈
 
+```javascript
+const obj = reactive({x: 1, y: 2})
+const computedRef = computed(() => obj.x * 2)
+const render = () => {
+  document.body.innerHTML = `
+    <div>
+      <div>obj:y-->${obj.y}</div>
+      <div>${computedTest.value}</div>
+    </div>
+   `
+}
+```
+
 ![](./img/%E5%B5%8C%E5%A5%97watcher.jpg)
 
 - 源中的计算属性的依赖收集没有在实例化时进行，而是在 render 函数执行时，在进行依赖收集

@@ -1,5 +1,7 @@
 export {defineReactive, reactive} from './defineReactive'
+export {ref} from './ref'
 export {nextTick} from './scheduler'
 export {Watcher} from './watcher'
+export {watchEffect} from './watchEffect'
 export {watch} from './watch'
 export {computed} from './computed'
