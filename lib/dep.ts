@@ -25,7 +25,7 @@ export class Dep {
   // id 用于watcher收集dep
   id: number
   subs: Watcher[]
-  map = new Map<number, boolean>()
+  // map = new Map<number, boolean>()
   constructor() {
     this.id = id++
     this.subs = []

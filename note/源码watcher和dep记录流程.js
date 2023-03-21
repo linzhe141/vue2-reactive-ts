@@ -11,7 +11,7 @@ vm.$watch(() => reactiveData.y, (newValue) => console.log(newValue))
 // watcher3 =>
 
 /**
- * watcher 为什么记录dep,简而言之方便清除过期依赖
+ * watcher 为什么记录dep,简而言之方便清除过期依赖，还有计算属性中收集上层watcher，比如渲染watcher和自定义watcher
  * https://juejin.cn/post/6995079895470571551
  * 
  * 依赖收集流程

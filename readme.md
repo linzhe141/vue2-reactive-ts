@@ -1,3 +1,22 @@
+# tips 
+### 1、vscode 调试web项目
+```json
+{
+  // 使用 IntelliSense 了解相关属性。 
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:7788", //web项目启动的端口，web项目必须要先运行，再进行调试
+      "webRoot": "${workspaceFolder}" 
+    }
+  ]
+}
+```
 # 1、源码 Dep 的静态属性 target 为什么是栈
 
 ```javascript

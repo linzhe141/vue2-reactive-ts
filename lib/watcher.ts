@@ -38,6 +38,7 @@ export class Watcher {
     // this.get()
     this.value = this.lazy ? undefined : this.get()
   }
+  // dep就是属性的dep
   addDep(dep: Dep) {
     const depId = dep.id
     const depsIdMap = this.depsIdMap

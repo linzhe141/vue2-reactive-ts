@@ -6,17 +6,17 @@ export function defineReactive(
   value: any
 ) {
   const dep = new Dep()
+  // 重新定义属性，还要递归 性能低
   Object.defineProperty(target, key, {
     get: function reactiveGetter() {
       if (Dep.target) {
         // dep.addSub(Dep.target)
         // watcher必须要记录对应的dep要不计算属性不好实现
-        dep.depend()
+        dep.depend() // 作用也是dep.addSub(Dep.target)，但是是通过watcher记录
       }
       return value
     },
     set: function reactiveSetter(newValue) {
-      // debugger
       if (!Array.isArray(newValue) && typeof newValue === 'object') {
         reactive(newValue)
       }

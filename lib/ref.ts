@@ -1,9 +1,14 @@
 import {defineReactive} from './defineReactive'
-export const ref = (value: unknown) => {
+// TODO 目前只做了基本类型的ref
+type SourceType = number | boolean | string
+type RefType = {
+  value: SourceType
+}
+export const ref = (value: SourceType) => {
   return createRef(value)
 }
-const createRef = (value: unknown) => {
-  const ref = {}
+const createRef = (value: SourceType) => {
+  const ref = {} as RefType
   defineReactive(ref, 'value', value)
-  return ref as any
+  return ref
 }
