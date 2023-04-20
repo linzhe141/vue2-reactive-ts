@@ -3,12 +3,12 @@ let reactiveData = {
   y: 1
 }
 
-let render = () => `<div>${reactiveData.x}---${reactiveData.y}</div>`
 // watcher1=>
-vm.$watch(() => reactiveData.x, (newValue) => console.log(newValue))
+let render = () => `<div>${reactiveData.x}---${reactiveData.y}</div>`
 // watcher2 =>
-vm.$watch(() => reactiveData.y, (newValue) => console.log(newValue))
+vm.$watch(() => reactiveData.x, (newValue) => console.log(newValue))
 // watcher3 =>
+vm.$watch(() => reactiveData.y, (newValue) => console.log(newValue))
 
 /**
  * watcher 为什么记录dep,简而言之方便清除过期依赖，还有计算属性中收集上层watcher，比如渲染watcher和自定义watcher

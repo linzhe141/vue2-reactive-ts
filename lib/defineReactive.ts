@@ -17,6 +17,7 @@ export function defineReactive(
       return value
     },
     set: function reactiveSetter(newValue) {
+      if (newValue === value) return
       if (!Array.isArray(newValue) && typeof newValue === 'object') {
         reactive(newValue)
       }
@@ -26,7 +27,7 @@ export function defineReactive(
   })
 }
 
-export function reactive(obj: Record<string, any>) {
+export function reactive<T extends Record<string, any>>(obj: T) {
   for (const key in obj) {
     defineReactive(obj, key, obj[key])
     if (!Array.isArray(obj[key]) && typeof obj[key] === 'object') {

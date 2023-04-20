@@ -27,7 +27,7 @@ class ComputedRefImpl {
     }
     // TODO 源码这一行的意义是什么?
     // Dep.target 为渲染watcher
-    // 当依赖项变了，computedWatcher要触发，依赖于computedWatcher的的渲染watcher也要出发
+    // 当依赖项变了，computedWatcher要触发，依赖于computedWatcher的的渲染watcher也要触发
     if (Dep.target) {
       // 如何拿到对应的dep 进行依赖收集
       // watcher.depend
