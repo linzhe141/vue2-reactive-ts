@@ -6,7 +6,7 @@ import {
   computed,
   ref,
   watchEffect,
-} from '../lib/main'
+} from './reactivity'
 
 const obj = reactive({
   x: 100,
@@ -38,7 +38,7 @@ const computedTest = computed(() => {
   console.log('computed change~')
   return obj.x * 2
 })
-const render = () => {
+const updateComponent = () => {
   // document.body.innerHTML = `
   //   <div>
   //     <div id='test'>obj:x-->${JSON.stringify(obj.x)}</div>
@@ -46,6 +46,8 @@ const render = () => {
   //     <div>computedTest:-->${computedTest.value}</div>
   //   </div>
   //  `
+  // 对应源码的 diff 加 虚拟dom
+  // vm._update(vm._render)
   document.body.innerHTML = `
     <div>
       <div>refTest-->${refTest.value}</div>
@@ -55,7 +57,7 @@ const render = () => {
    `
 }
 // 组件就是一个渲染watcher
-new Watcher(render)
+new Watcher(updateComponent)
 
 obj.x = 101
 obj.x = 102

@@ -1,61 +1,189 @@
-# tips 
-### 1、vscode 调试web项目
-```json
-{
-  // 使用 IntelliSense 了解相关属性。 
-  // 悬停以查看现有属性的描述。
-  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Launch Chrome against localhost",
-      "url": "http://localhost:7788", //web项目启动的端口，web项目必须要先运行，再进行调试
-      "webRoot": "${workspaceFolder}" 
-    }
-  ]
-}
-```
-# 1、源码 Dep 的静态属性 target 为什么是栈
+# 🚀 基于 ts 实现简易版 Vue2 响应式系统 🚀
+
+这是一个基于 Vue2 的响应式系统的简单实现，实现了 composition api 的几个核心 api。该实现包括了核心的 watcher、dep、以及 defineReactive，但只针对普通对象类型，不包含数组。此外，还包括了 reactive，ref，computed，nextTick，watch，watchEffect 等简易功能。
+
+## 📦 包含内容
+
+- `watcher`：观察者模式的实现
+- `dep`：依赖收集器
+- `defineReactive`：劫持对象属性的方法
+- `reactive`：将普通对象转换为响应式对象
+- `ref`：将基本数据类型转换为响应式数据
+- `computed`：计算属性的实现
+- `nextTick`：异步更新策略
+- `watch`：监视响应式数据的变化
+- `watchEffect`：监视响应式数据的变化，自动收集依赖
+
+## 📝 使用方法
+
+### `reactive`
 
 ```javascript
-const obj = reactive({x: 1, y: 2})
-const computedRef = computed(() => obj.x * 2)
-const render = () => {
+// 将普通对象转换为响应式对象
+import {Watcher, reactive} from './reactivity'
+const obj = reactive({
+  x: 100,
+  y: 200,
+})
+const updateComponent = () => {
   document.body.innerHTML = `
     <div>
-      <div>obj:y-->${obj.y}</div>
-      <div>${computedTest.value}</div>
+      <div id='test1'>obj:x-->${JSON.stringify(obj.x)}</div>
+      <div id='test2'>obj:y-->${JSON.stringify(obj.y)}</div>
     </div>
    `
 }
+// 组件就是一个渲染watcher
+new Watcher(updateComponent)
+
+setTimeout(() => {
+  obj.x = 1 // 视图就会更新
+  obj.y = 2 // 视图就会更新
+}, 3000)
 ```
 
-![](./img/%E5%B5%8C%E5%A5%97watcher.jpg)
+### `ref`
 
-- 源中的计算属性的依赖收集没有在实例化时进行，而是在 render 函数执行时，在进行依赖收集
-- 比如当渲染 watcher 进行依赖收集时，首先 obj.y 的 dep 先收集当前渲染 watcher
-  当走到计算属性 watcher 时，计算属性 value 的 getter 函数中的 Dep.target 为渲染 watcher
+```javascript
+// 将基本数据类型转换为响应式数据
+import {Watcher, ref} from './reactivity'
+const refTest = ref(1)
+const updateComponent = () => {
+  document.body.innerHTML = `
+    <div>
+      <div id='test1'>refTest.value-->${JSON.stringify(refTest.value)}</div>
+    </div>
+   `
+}
+// 组件就是一个渲染watcher
+new Watcher(updateComponent)
 
-  ```javascript
-  // 源码
-  function computedGetter() {
-    // 计算属性的getter的watcher
-    const watcher = this._computedWatchers && this._computedWatchers[key]
-    if (watcher) {
-      if (watcher.dirty) {
-        // 源码这里才是第一次做计算属性的*依赖obj.x*的依赖收集,执行watcher的get方法
-        // 执行完后 还是处于渲染watcher的执行render方法中
-        watcher.evaluate()
-      }
-      // 这里的target为渲染watcher
-      if (Dep.target) {
-        // 把渲染watcher添加到依赖dep的sub数组里
-        // 这样当依赖obj.x进行setter时，渲染watcher和计算watcher都会被通知
-        watcher.depend()
-      }
-      return watcher.value
-    }
+setTimeout(() => {
+  refTest.value = 100 // 视图就会更新
+}, 3000)
+```
+
+### `computed`
+
+```javascript
+import {Watcher, reactive, computed} from './reactivity'
+const obj = reactive({
+  x: 100,
+})
+const double = computed(() => {
+  console.log('computed change~')
+  return obj.x * 2
+})
+const updateComponent = () => {
+  document.body.innerHTML = `
+    <div>
+      <div id='test1'>double.value-->${JSON.stringify(double.value)}</div>
+    </div>
+   `
+}
+// 组件就是一个渲染watcher
+new Watcher(updateComponent)
+
+setTimeout(() => {
+  obj.x = 200 // 视图就会更新
+}, 3000)
+```
+
+### `nextTick`
+
+```javascript
+// 异步更新策略
+import {Watcher, reactive, nextTick} from './reactivity'
+const obj = reactive({
+  x: 100,
+})
+const updateComponent = () => {
+  document.body.innerHTML = `
+    <div>
+      <div id='test'>obj:x-->${JSON.stringify(obj.x)}</div>
+    </div>
+   `
+}
+// 组件就是一个渲染watcher
+new Watcher(updateComponent)
+
+obj.x = 101
+obj.x = 102
+console.log('同步1', document.querySelector('#test')?.innerHTML)
+nextTick(() => {
+  console.log('nextTick', document.querySelector('#test')?.innerHTML)
+})
+console.log('同步2', document.querySelector('#test')?.innerHTML)
+// ! 打印先后顺序
+// 同步1 obj:x--&gt;100
+// 同步2 obj:x--&gt;100
+// nextTick obj:x--&gt;102
+```
+
+### `watch`
+
+```javascript
+// 监视响应式数据的变化
+import {
+  reactive,
+  watch,
+  computed,
+  ref,
+} from './reactivity'
+const obj = reactive({
+  x: 100,
+})
+const refTest = ref(1)
+const computedTest = computed(() => {
+  console.log('computed change~')
+  return obj.x * 2
+})
+watch(
+  () => obj.x,
+  (newValue, oldValue) => {
+    console.log('obj.x change~', newValue, 'old-value', oldValue)
   }
-  ```
+)
+
+watch(
+  () => refTest.value,
+  (newValue, oldValue) => {
+    console.log('refTest.value change~', newValue, 'old-value', oldValue)
+  }
+)
+
+watch(
+  () => computedTest.value as any,
+  (newValue, oldValue) => {
+    console.log('computedTest.value change~', newValue, 'old-value', oldValue)
+  }
+)
+setTimeout(() => {
+  obj.x = 321
+  refTest.value = 100
+  // 依次打印
+  // obj.x change~ 321 old-value 100
+  // computed change~
+  // computedTest.value change~ 642 old-value 200
+  // refTest.value change~ 100 old-value 1
+}, 3000)
+
+```
+
+### `watchEffect`
+
+```javascript
+// 监视响应式数据的变化，自动收集依赖
+import {ref, watchEffect} from './reactivity'
+const refTest = ref(1)
+watchEffect(() => {
+  console.log('watchEffect refTest', refTest.value)
+})
+setTimeout(() => {
+  refTest.value = 100
+  // 依次打印
+  // watchEffect refTest 100
+}, 3000)
+```
+
+## 🤝 贡献
