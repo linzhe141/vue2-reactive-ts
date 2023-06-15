@@ -185,5 +185,3 @@ setTimeout(() => {
   // watchEffect refTest 100
 }, 3000)
 ```
-
-## 🤝 贡献
